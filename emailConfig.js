@@ -34,7 +34,7 @@ emailHelperInstance.prototype.send = function(options) {
   // Set the default values
 
   _.defaults(options, { ccField: undefined, bccField: undefined, subject: undefined, templateId: undefined, message: undefined, messageSubstitutions: undefined},
-    { subject: 'Your Demo Subject', ccField: [], bccField: [], substitution: {}, message: '', templateId: '', messageSubstitutions: '' });
+    { subject: '', ccField: [], bccField: [], substitution: {}, message: '', templateId: '', messageSubstitutions: '' });
 
   // Substitute the Variable
   Object.keys(options.messageSubstitutions).map(function(data, keys) {
