@@ -13,7 +13,7 @@ var _ = require('lodash');
  *
  * bccField: To the bcc of the email(Array)
  *
- * substitutions: Substitution field name corresponding to the value(JSON).Example '$variable_name': value
+ * messageSubstitutions: Substitution field name corresponding to the value(JSON).Example '$variable_name': value
  *
  * message: The message with the substitution variables as '$variable_name'(String) as html
  *
