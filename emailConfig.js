@@ -33,13 +33,13 @@ emailHelperInstance.prototype.send = function(options) {
   // This should be the function that creates and sends email; use this.sg and this.apiKey.
   // Set the default values
 
-  _.defaults(options, { ccField: undefined, bccField: undefined, subject: undefined, templateId: undefined, message: undefined, messageSubstitutions: undefined},
-    { subject: '', ccField: [], bccField: [], substitution: {}, message: '', templateId: '', messageSubstitutions: '' });
+  _.defaults(options, { ccField: undefined, bccField: undefined, templateId: undefined, message: undefined, messageSubstitutions: undefined},
+    { ccField: [], bccField: [], message: '', templateId: '', messageSubstitutions: '' });
 
   // Substitute the Variable
-  Object.keys(options.messageSubstitutions).map(function(data, keys) {
+  Object.keys(options.messageSubstitutions).map(function(data, key) {
     options.message = options.message.replace(data, options.messageSubstitutions[data]);
-})
+  })
 
   // Customise sendGrid Data
   var sendGridData = {
@@ -55,19 +55,28 @@ emailHelperInstance.prototype.send = function(options) {
           ],
           cc: options.ccField,
           bcc: options.bccField,
-          subject: options.subject,
         },
       ],
+      subject: options.subject,
       from: {
-        email: options.fromEmail,
+        email: options.fromField,
       },
-      template_id: options.templateId,
       content: [{
         type: 'text/html',
         value: options.message
       }]
     },
   }
+
+  // Delete the cc and bcc field if they are empty
+  if(options.ccField.length == 0) {
+    delete sendGridData.body.personalizations[0].cc;
+  }
+  if(options.bccField.length == 0) {
+    delete sendGridData.body.personalizations[0].bcc;
+  }
+
+
 
   var request = sg.emptyRequest(sendGridData);
 
