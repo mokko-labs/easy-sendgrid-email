@@ -2,6 +2,7 @@
   "name": "easy-sendgrid-email",
   "version": "1.0.0",
   "main": "index.js",
+  "main": "emailConfig.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
