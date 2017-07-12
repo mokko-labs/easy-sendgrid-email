@@ -1,11 +1,4 @@
-/**
- * Either define the api keys here or link it as the config environment
- *
- * Uncomment below or Add your own files*/
-// import config from '../config/environment';
-// var sg = require('sendgrid')(config.sendGrid.apiKey);   //add the sendgrid and its api key
-
-import _ from 'lodash';
+var _ = require('lodash');
 
 /**
  * req: Request Object(Object)
@@ -22,20 +15,34 @@ import _ from 'lodash';
  *
  * substitutions: Substitution field name corresponding to the value(JSON).Example '$variable_name': value
  *
- * message: The message with the substitution variables as '$variable_name'(String) as html */
-export default function customEmail (options) {
+ * message: The message with the substitution variables as '$variable_name'(String) as html
+ *
+ * */
+
+function emailHelper(sendgridApiKey) {
+  return new emailHelperInstance(sendgridApiKey);
+}
+
+function emailHelperInstance(sendgridApiKey) {
+  this.apiKey = sendgridApiKey;
+  this.sg = require('sendgrid')(sendgridApiKey);
+}
+
+emailHelperInstance.prototype.send = function(options) {
+
+  // This should be the function that creates and sends email; use this.sg and this.apiKey.
   // Set the default values
 
-  _.defaults(options, { subject: undefined, ccField: undefined, bccField: undefined, substitution: undefined, message: undefined },
-    { subject: 'Your Demo Subject', ccField: [], bccField: [], substitution: {}, message: '' });
+  _.defaults(options, { ccField: undefined, bccField: undefined, subject: undefined, templateId: undefined, message: undefined, messageSubstitutions: undefined},
+    { subject: 'Your Demo Subject', ccField: [], bccField: [], substitution: {}, message: '', templateId: '', messageSubstitutions: '' });
 
   // Substitute the Variable
-  Object.keys(options.substitutions).map((data, keys) => {
-    options.message = options.message.replace(data, options.substitutions[data]);
-  })
+  Object.keys(options.messageSubstitutions).map(function(data, keys) {
+    options.message = options.message.replace(data, options.messageSubstitutions[data]);
+})
 
   // Customise sendGrid Data
-  let sendGridData = {
+  var sendGridData = {
     method: 'POST',
     path: '/v3/mail/send',
     body: {
@@ -46,17 +53,19 @@ export default function customEmail (options) {
               email: options.toField
             },
           ],
+          cc: options.ccField,
+          bcc: options.bccField,
           subject: options.subject,
-          substitutions: {
-            '%message%': options.message
-          },
         },
       ],
       from: {
-        name: 'Your Email Name',
-        email: 'contact@youremailname.com',
+        email: options.fromEmail,
       },
-      template_id: "your template id",
+      template_id: options.templateId,
+      content: [{
+        type: 'text/html',
+        value: options.message
+      }]
     },
   }
 
@@ -64,13 +73,17 @@ export default function customEmail (options) {
 
   //check if the email gets sent otherwise continue
   return sg.API(request)
-    .then(response => {
+      .then(function(response){
       console.log(response)
-    })
-    .catch(error => {
-      //error is an instance of SendGridError
-      //The full response is attached to error.response
-      console.log(error.response.statusCode);
-      throw error
-    });
+})
+  .catch(function(error) {
+    //error is an instance of SendGridError
+    //The full response is attached to error.response
+    console.log(error.response.statusCode);
+  throw error
+});
+
 }
+
+
+module.exports = emailHelper;
