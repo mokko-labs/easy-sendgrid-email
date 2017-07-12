@@ -1,0 +1,24 @@
+{
+  "name": "easy-sendgrid-email",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mokko-lab/easy-sendgrid-email.git"
+  },
+  "author": "Pritish Vaidya, Manan Shah",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mokko-lab/easy-sendgrid-email/issues"
+  },
+  "homepage": "https://github.com/mokko-lab/easy-sendgrid-email#readme",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "sendgrid": "^5.1.2"
+  },
+  "devDependencies": {},
+  "description": ""
+}
