@@ -2,7 +2,7 @@
   "name": "easy-sendgrid-email",
   "version": "1.0.0",
   "description": "Easy SendGrid Email",
-  "main": "emailConfig.js",
+  "main": "easy-sendgrid-email.js",
   "dependencies": {
     "lodash": "^4.17.4",
     "sendgrid": "^5.1.2"
