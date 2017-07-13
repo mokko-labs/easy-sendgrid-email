@@ -33,6 +33,7 @@ emailHelperInstance.prototype.send = function(options) {
   // Set the default values
   var def = {
     message: '',
+    substitutions: '',
     templateId: '',
     messageSubstitutions: ''
   }
@@ -65,7 +66,7 @@ emailHelperInstance.prototype.send = function(options) {
     options.message = options.message.replace(data, options.messageSubstitutions[data]);
   })
 
-  // Customise sendGrid Data
+  // Customise sendGrid Data and set the basic template
   var sendGridData = {
     method: 'POST',
     path: '/v3/mail/send',
@@ -85,26 +86,36 @@ emailHelperInstance.prototype.send = function(options) {
       from: {
         email: options.fromField,
       },
-      content: [{
-        type: 'text/html',
-        value: options.message
-      }]
     },
   }
+  // If the user specifies a template id with a substitution tag then substitute it else send using the default content
+  if(options.templateId == '' || options.substitutions == '') {
+    sendGridData.body.content = [{
+      type: 'text/html',
+      value: options.message
+    }]
+  }
+  else {
+    sendGridData.body.template_id = options.templateId
+    sendGridData.body.personalizations[0].substitutions = {}
+    sendGridData.body.personalizations[0].substitutions['%' + options.substitutions + '%'] = options.message
+  }
+
+  console.log(sendGridData.body.personalizations)
 
   var request = this.sg.emptyRequest(sendGridData);
 
-  //check if the email gets sent otherwise continue
+  // check if the email gets sent otherwise continue
   return this.sg.API(request)
-      .then(function(response){
+    .then(function(response){
       console.log(response)
-})
-  .catch(function(error) {
-    //error is an instance of SendGridError
-    //The full response is attached to error.response
-    console.log(error.response.statusCode);
-  throw error
-});
+    })
+    .catch(function(error) {
+      // error is an instance of SendGridError
+      // The full response is attached to error.response
+      console.log(error.response.statusCode);
+      throw error
+    });
 
 }
 
