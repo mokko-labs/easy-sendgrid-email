@@ -1,21 +1,18 @@
 var _ = require('lodash');
 
 /**
- * req: Request Object(Object)
  *
- * res: Response Object(Object)
+ * toField: To the reciever of the email(String)(Required)
  *
- * toField: To the reciever of the email(String)
+ * subject: Subject of the email(String)(Required)
  *
- * subject: Subject of the email(String)
+ * ccField: To the cc of the email(Array)(Optional)
  *
- * ccField: To the cc of the email(Array)
+ * bccField: To the bcc of the email(Array)(Optional)
  *
- * bccField: To the bcc of the email(Array)
+ * messageSubstitutions: Substitution field name corresponding to the value(JSON)(Optional).Example '$variable_name': value
  *
- * messageSubstitutions: Substitution field name corresponding to the value(JSON).Example '$variable_name': value
- *
- * message: The message with the substitution variables as '$variable_name'(String) as html
+ * message: The message with the substitution variables as '$variable_name'(String) as html(Required)
  *
  * */
 
@@ -30,11 +27,15 @@ function emailHelperInstance(sendgridApiKey) {
 
 emailHelperInstance.prototype.send = function(options) {
 
-  // This should be the function that creates and sends email; use this.sg and this.apiKey.
   // Set the default values
+  var def = {
+    message: '',
+    templateId: '',
+    messageSubstitutions: ''
+  }
 
-  _.defaults(options, { ccField: undefined, bccField: undefined, templateId: undefined, message: undefined, messageSubstitutions: undefined},
-    { ccField: [], bccField: [], message: '', templateId: '', messageSubstitutions: '' });
+  var options = _.merge(def, options);
+  console.log(options)
 
   // Substitute the Variable
   Object.keys(options.messageSubstitutions).map(function(data, key) {
@@ -68,20 +69,10 @@ emailHelperInstance.prototype.send = function(options) {
     },
   }
 
-  // Delete the cc and bcc field if they are empty
-  if(options.ccField.length == 0) {
-    delete sendGridData.body.personalizations[0].cc;
-  }
-  if(options.bccField.length == 0) {
-    delete sendGridData.body.personalizations[0].bcc;
-  }
-
-
-
-  var request = sg.emptyRequest(sendGridData);
+  var request = this.sg.emptyRequest(sendGridData);
 
   //check if the email gets sent otherwise continue
-  return sg.API(request)
+  return this.sg.API(request)
       .then(function(response){
       console.log(response)
 })
