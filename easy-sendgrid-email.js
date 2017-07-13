@@ -40,19 +40,25 @@ emailHelperInstance.prototype.send = function(options) {
   var options = _.merge(def, options);
 
   var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // If the User enters comma separated ccFields
-  Object.keys(options.ccField).map(function(data, key) {
-    if(emailRegex.test(options.ccField[data])) {
-      options.ccField[data] = {email: options.ccField[data]}
-    }
-  })
 
-  // If the User enters comma separated bccFields
-  Object.keys(options.bccField).map(function(data, key) {
-    if(emailRegex.test(options.bccField[data])) {
-      options.bccField[data] = {email: options.bccField[data]}
-    }
-  })
+  // To check if cc and bcc fields are not undefined
+  if(options.ccField) {
+    // If the User enters comma separated ccFields
+    Object.keys(options.ccField).map(function(data, key) {
+      if(emailRegex.test(options.ccField[data])) {
+        options.ccField[data] = {email: options.ccField[data]}
+      }
+    })
+  }
+
+  if(options.bccField) {
+    // If the User enters comma separated bccFields
+    Object.keys(options.bccField).map(function(data, key) {
+      if(emailRegex.test(options.bccField[data])) {
+        options.bccField[data] = {email: options.bccField[data]}
+      }
+    })
+  }
 
   // Substitute the Variable
   Object.keys(options.messageSubstitutions).map(function(data, key) {
