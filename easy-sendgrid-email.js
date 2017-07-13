@@ -6,7 +6,7 @@ var _ = require('lodash');
  *
  * subject: Subject of the email(String)(Required)
  *
- * ccField: To the cc of the email(Array)(Optional)
+ * ccField: To the cc of the email(Array)(Optional) Either , separated emails or set the name as {name: 'Default name', email: 'Default Email'}
  *
  * bccField: To the bcc of the email(Array)(Optional)
  *
@@ -14,6 +14,9 @@ var _ = require('lodash');
  *
  * message: The message with the substitution variables as '$variable_name'(String) as html(Required)
  *
+ * templateId: The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html),
+ * you do not need to specify those at the personalizations nor message level.(String)(Optional)
+ *      substitutions: If you use a template id then the message can be embedded in the html substitution
  * */
 
 function emailHelper(sendgridApiKey) {
@@ -35,7 +38,21 @@ emailHelperInstance.prototype.send = function(options) {
   }
 
   var options = _.merge(def, options);
-  console.log(options)
+
+  var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // If the User enters comma separated ccFields
+  Object.keys(options.ccField).map(function(data, key) {
+    if(emailRegex.test(options.ccField[data])) {
+      options.ccField[data] = {email: options.ccField[data]}
+    }
+  })
+
+  // If the User enters comma separated bccFields
+  Object.keys(options.bccField).map(function(data, key) {
+    if(emailRegex.test(options.bccField[data])) {
+      options.bccField[data] = {email: options.bccField[data]}
+    }
+  })
 
   // Substitute the Variable
   Object.keys(options.messageSubstitutions).map(function(data, key) {
