@@ -127,7 +127,7 @@ emailHelperInstance.prototype.send = function(options) {
     .catch(function(error) {
       // error is an instance of SendGridError
       // The full response is attached to error.response
-      return error
+      throw error
     });
 
 }
