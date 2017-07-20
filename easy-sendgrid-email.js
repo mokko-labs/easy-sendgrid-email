@@ -6,6 +6,9 @@ var util = require('util')
  *
  * toField: To the reciever of the email(String)(Required)
  *
+ * formFieldName: From the sender of the name(String)
+ * fromFieldEmail: From the sender of the email(String)
+ *
  * subject: Subject of the email(String)(Required)
  *
  * ccField: To the cc of the email(Array)(Optional) Either , separated emails or set the name as {name: 'Default name', email: 'Default Email'}
@@ -92,7 +95,8 @@ emailHelperInstance.prototype.send = function(options) {
       ],
       subject: options.subject,
       from: {
-        email: options.fromField
+        name: options.fromFieldName,
+        email: options.fromFieldEmail
       },
     },
   }
