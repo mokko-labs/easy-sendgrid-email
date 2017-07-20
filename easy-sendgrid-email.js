@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var util = require('util')
 
 /**
  *
@@ -10,13 +11,15 @@ var _ = require('lodash');
  *
  * bccField: To the bcc of the email(Array)(Optional)
  *
- * messageSubstitutions: Substitution field name corresponding to the value(JSON)(Optional).Example '$variable_name': value
- *
- * message: The message with the substitution variables as '$variable_name'(String) as html(Required)
- *
  * templateId: The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html),
  * you do not need to specify those at the personalizations nor message level.(String)(Optional)
- *      substitutions: If you use a template id then the message can be embedded in the html substitution
+ *      substitutions: If you use a template id then the message can be embedded in the html substitution(Array)(Substitutions variable for sendgrid)
+ *
+ *      message: Add the message here with the fields you want to replace(Array).Example ['message_with_fields_in_it', 'message1_with_fields_in_it', 'message2_with_fields_in_it']
+ *
+ *      messageSubstitutions: Data corresponding to the field to be replaced in the message(Array[JSON]).
+ *
+ *      Example [{messageSubstitution_tag1: 'String',messageSubstitution_tag2: 'String'}, {messageSubstitution1_tag1: 'String',messageSubstitution1_tag2: 'String'}]
  * */
 
 function emailHelper(sendgridApiKey) {
@@ -38,7 +41,7 @@ emailHelperInstance.prototype.send = function(options) {
     messageSubstitutions: ''
   }
 
-  var options = _.merge(def, options);
+  options = _.merge(def, options);
 
   var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -61,9 +64,11 @@ emailHelperInstance.prototype.send = function(options) {
     })
   }
 
-  // Substitute the Variable
-  Object.keys(options.messageSubstitutions).map(function(data, key) {
-    options.message = options.message.replace(data, options.messageSubstitutions[data]);
+  // Substitutions of the message with the messageSubstitution variables
+  options.message.map(function(data, key) {
+    Object.keys(options.messageSubstitutions[key]).map(function(tagsData, keys) {
+      options.message[key] = options.message[key].replace(tagsData, options.messageSubstitutions[key][tagsData]);
+    })
   })
 
   // Customise sendGrid Data and set the basic template
@@ -84,24 +89,26 @@ emailHelperInstance.prototype.send = function(options) {
       ],
       subject: options.subject,
       from: {
-        email: options.fromField,
+        email: options.fromField
       },
     },
   }
   // If the user specifies a template id with a substitution tag then substitute it else send using the default content
   if(options.templateId == '' || options.substitutions == '') {
+    _.chunk(options.message)
     sendGridData.body.content = [{
       type: 'text/html',
-      value: options.message
+      value: options.message.toString()
     }]
   }
   else {
     sendGridData.body.template_id = options.templateId
     sendGridData.body.personalizations[0].substitutions = {}
-    sendGridData.body.personalizations[0].substitutions['%' + options.substitutions + '%'] = options.message
-  }
 
-  console.log(sendGridData.body.personalizations)
+    options.substitutions.map(function(data, key) {
+      sendGridData.body.personalizations[0].substitutions['%' + data + '%'] = options.message[key]
+    })
+  }
 
   var request = this.sg.emptyRequest(sendGridData);
 
