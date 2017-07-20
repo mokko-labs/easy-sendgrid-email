@@ -65,11 +65,13 @@ emailHelperInstance.prototype.send = function(options) {
   }
 
   // Substitutions of the message with the messageSubstitution variables
-  options.message.map(function(data, key) {
-    Object.keys(options.messageSubstitutions[key]).map(function(tagsData, keys) {
-      options.message[key] = options.message[key].replace(tagsData, options.messageSubstitutions[key][tagsData]);
+  if(options.messageSubstitutions && options.message) {
+    options.message.map(function(data, key) {
+      Object.keys(options.messageSubstitutions[key]).map(function(tagsData, keys) {
+        options.message[key] = options.message[key].replace(tagsData, options.messageSubstitutions[key][tagsData]);
+      })
     })
-  })
+  }
 
   // Customise sendGrid Data and set the basic template
   var sendGridData = {
@@ -108,6 +110,8 @@ emailHelperInstance.prototype.send = function(options) {
     options.substitutions.map(function(data, key) {
       sendGridData.body.personalizations[0].substitutions['%' + data + '%'] = options.message[key]
     })
+
+    console.log(options.message)
   }
 
   var request = this.sg.emptyRequest(sendGridData);
