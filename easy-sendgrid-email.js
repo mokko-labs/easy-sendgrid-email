@@ -2,6 +2,7 @@ var _ = require('lodash');
 var util = require('util')
 
 /**
+ * Emails Sent as a promise
  *
  * toField: To the reciever of the email(String)(Required)
  *
@@ -110,8 +111,6 @@ emailHelperInstance.prototype.send = function(options) {
     options.substitutions.map(function(data, key) {
       sendGridData.body.personalizations[0].substitutions['%' + data + '%'] = options.message[key]
     })
-
-    console.log(options.message)
   }
 
   var request = this.sg.emptyRequest(sendGridData);
@@ -119,13 +118,12 @@ emailHelperInstance.prototype.send = function(options) {
   // check if the email gets sent otherwise continue
   return this.sg.API(request)
     .then(function(response){
-      console.log(response)
+      return response
     })
     .catch(function(error) {
       // error is an instance of SendGridError
       // The full response is attached to error.response
-      console.log(error.response.statusCode);
-      throw error
+      return error
     });
 
 }
