@@ -15,6 +15,8 @@ var util = require('util')
  *
  * bccField: To the bcc of the email(Array)(Optional)
  *
+ * attachments: Add the attachments as in the sendgrid basic template.(JSON)
+ *
  * templateId: The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html),
  * you do not need to specify those at the personalizations nor message level.(String)(Optional)
  *      substitutions: If you use a template id then the message can be embedded in the html substitution(Array)(Substitutions variable for sendgrid)
@@ -98,6 +100,7 @@ emailHelperInstance.prototype.send = function(options) {
         name: options.fromFieldName,
         email: options.fromFieldEmail
       },
+      attachments: options.attachments
     },
   }
   // If the user specifies a template id with a substitution tag then substitute it else send using the default content
