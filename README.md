@@ -92,7 +92,6 @@ cc | Array | false | null | Set the email name/names for the cc.
 bcc | Array | false | null | Set the email name/names for the bcc.
 subject | String | true | to be provided | Set the subject of the email.
 |  | | |**tip:** _Do not use empty name string if it is not required._
-message | String | true | to be provided | Set the subject of the email.
 attachments | String | false | null | Set the attachments object of the SendGrid here.
 |  | | |**tip:** _Example - [{content: demoContent, type: 'application/pdf', filename: 'demoPdf.pdf'}]._
 message | Array/String | true | to be provided | Set the message to be sent.
