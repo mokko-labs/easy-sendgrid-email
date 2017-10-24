@@ -4,24 +4,24 @@ var util = require('util')
 /**
  * Emails Sent as a promise
  *
- * toField: To the reciever of the email(String)(Required)
+ * to: To the reciever of the email(String)(Required)
  *
- * formFieldName: From the sender of the name(String)
- * fromFieldEmail: From the sender of the email(String)
+ * fromName: From the sender of the name(String)
+ * fromEmail: From the sender of the email(String)
  *
  * subject: Subject of the email(String)(Required)
  *
- * ccField: To the cc of the email(Array)(Optional) Either , separated emails or set the name as {name: 'Default name', email: 'Default Email'}
+ * cc: To the cc of the email(Array)(Optional) Either , separated emails or set the name as {name: 'Default name', email: 'Default Email'}
  *
- * bccField: To the bcc of the email(Array)(Optional)
+ * bcc: To the bcc of the email(Array)(Optional)
  *
  * templateId: The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html),
  * you do not need to specify those at the personalizations nor message level.(String)(Optional)
  *      substitutions: If you use a template id then the message can be embedded in the html substitution(Array)(Substitutions variable for sendgrid)
  *
- *      message: Add the message here with the fields you want to replace(Array).Example ['message_with_fields_in_it', 'message1_with_fields_in_it', 'message2_with_fields_in_it']
+ *      message: Add the message here with the s you want to replace(Array).Example ['message_with_s_in_it', 'message1_with_s_in_it', 'message2_with_s_in_it']
  *
- *      messageSubstitutions: Data corresponding to the field to be replaced in the message(Array[JSON]).
+ *      messageSubstitutions: Data corresponding to the  to be replaced in the message(Array[JSON]).
  *
  *      Example [{messageSubstitution_tag1: 'String',messageSubstitution_tag2: 'String'}, {messageSubstitution1_tag1: 'String',messageSubstitution1_tag2: 'String'}]
  * */
@@ -30,6 +30,7 @@ function emailHelper(sendgridApiKey) {
   return new emailHelperInstance(sendgridApiKey);
 }
 
+// Api keu function
 function emailHelperInstance(sendgridApiKey) {
   this.apiKey = sendgridApiKey;
   this.sg = require('sendgrid')(sendgridApiKey);
@@ -49,25 +50,28 @@ emailHelperInstance.prototype.send = function(options) {
 
   var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  // To check if cc and bcc fields are not undefined
-  if(options.ccField) {
-    // If the User enters comma separated ccFields
-    Object.keys(options.ccField).map(function(data, key) {
-      if(emailRegex.test(options.ccField[data])) {
-        options.ccField[data] = {email: options.ccField[data]}
+  // CC  as array
+  // To check if cc and bcc s are not undefined
+  if(options.cc) {
+    // If the User enters comma separated ccs
+    Object.keys(options.cc).map(function(data, key) {
+      if(emailRegex.test(options.cc[data])) {
+        options.cc[data] = {email: options.cc[data]}
       }
     })
   }
 
-  if(options.bccField) {
-    // If the User enters comma separated bccFields
-    Object.keys(options.bccField).map(function(data, key) {
-      if(emailRegex.test(options.bccField[data])) {
-        options.bccField[data] = {email: options.bccField[data]}
+  // Bcc  as array
+  if(options.bcc) {
+    // If the User enters comma separated bccs
+    Object.keys(options.bcc).map(function(data, key) {
+      if(emailRegex.test(options.bcc[data])) {
+        options.bcc[data] = {email: options.bcc[data]}
       }
     })
   }
 
+  // Replace the String Substitutions
   // Substitutions of the message with the messageSubstitution variables
   if(options.messageSubstitutions && options.message) {
     options.message.map(function(data, key) {
@@ -86,17 +90,17 @@ emailHelperInstance.prototype.send = function(options) {
         {
           to: [
             {
-              email: options.toField
+              email: options.to
             },
           ],
-          cc: options.ccField,
-          bcc: options.bccField,
+          cc: options.cc,
+          bcc: options.bcc,
         },
       ],
       subject: options.subject,
       from: {
-        name: options.fromFieldName,
-        email: options.fromFieldEmail
+        name: options.fromName,
+        email: options.fromEmail
       },
     },
   }
