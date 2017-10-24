@@ -35,7 +35,13 @@ Several quick start options are available:
 
 ## Usage
 
-Simple use case is as shown
+Import the package as
+
+```
+var easyEmail = require('easy-sendgrid-email')('Your api key');
+```
+
+and then use it as 
 
 ```
 easyEmail.send({
