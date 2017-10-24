@@ -32,7 +32,7 @@ function emailHelper(sendgridApiKey) {
   return new emailHelperInstance(sendgridApiKey);
 }
 
-// Api keu function
+// Api key function
 function emailHelperInstance(sendgridApiKey) {
   this.apiKey = sendgridApiKey;
   this.sg = require('sendgrid')(sendgridApiKey);
@@ -65,7 +65,7 @@ emailHelperInstance.prototype.send = function(options) {
 
   // Bcc  as array
   if(options.bcc) {
-    // If the User enters comma separated bccs
+    // If the User enters comma separated bcc
     Object.keys(options.bcc).map(function(data, key) {
       if(emailRegex.test(options.bcc[data])) {
         options.bcc[data] = {email: options.bcc[data]}
