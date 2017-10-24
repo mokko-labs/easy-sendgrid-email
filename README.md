@@ -80,3 +80,14 @@ templateId | String | false | null | Set the template ID of the SendGrid.
 messageSubstitutions | Array | false | null | Replaces the message fields with the messageSubstitution fields.
 substitutions | Array | false | null | Replace the message fields with the substitution fields as in SendGrid templateID.
 |  | | |**tip:** _Template ID is required. _
+
+## Creators
+
+**Pritish Vaidya**
+
+- <https://github.com/pritishvaidya94>
+- <https://github.com/pritishvaidya>
+
+
+## Copyright and license
+Code released under the [MIT License](https://github.com/mokko-lab/easy-sendgrid-email/blob/master/LICENSE).
