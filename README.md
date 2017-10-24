@@ -12,6 +12,7 @@
 ## Table of contents
 
 - [Quick start](#quick-start)
+- [Usage](#usage)
 - [Status](#status)
 - [What's included](#whats-included)
 - [Bugs and feature requests](#bugs-and-feature-requests)
@@ -31,6 +32,26 @@ Several quick start options are available:
 - Clone the repo: `git clone https://github.com/mokko-lab/easy-sendgrid-email.git`
 - Install with [npm](https://www.npmjs.com/): `npm install easy-sendgrid-email`
 - Install with [yarn](https://yarnpkg.com/): `yarn add easy-sendgrid-email`
+
+## Usage
+
+Simple use case is as shown
+
+```
+easyEmail.send({
+  to: 'reciever@example.com',
+  fromName: 'DemoName',
+  fromEmail: 'sender@example.com',
+  subject: 'Demo Subject',
+  message: 'Demo Content'
+})
+  .then(function(success) {
+  // Handle the success here
+  })
+  .catch(function(error) {
+  // Handle the error here
+})
+```
 
 ## Status
 
@@ -57,8 +78,8 @@ Have a bug or a feature request? Please first read and search for existing and c
 ## Documentation
 Option | Type | Required | Default | Description
 ------------- | ------------- | ------------- | ------------- | -------------
-to | String | true | to be provided | Set the email of the sender
-fromEmail | String | true | to be provided | Set the email of the reciever
+to | String | true | to be provided | Set the email of the reciever
+fromEmail | String | true | to be provided | Set the email of the sender
 fromName | String | false | null | Set the email name
 |  | | |**tip:** _Do not use empty name string if it is not required._
 cc | Array | false | null | Set the email name/names for the cc.
