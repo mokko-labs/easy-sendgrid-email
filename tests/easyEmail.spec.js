@@ -246,4 +246,70 @@ describe('should validate the message field', function () {
   });
 })
 
+describe('should validate the attachment field', function () {
+  before(function () {
+    options = {
+      fromEmail: 'pritish@mokko.io',
+      to: 'pritishvaidya94@gmail.com',
+      message: 'demo content',
+      subject: 'demo subject'
+    }
+  });
+  it('check if the attachment field is null', function () {
+    // Should always succeed
+    return easyEmail.send(options)
+      .then(function (success) {
+        return expect(success.statusCode).to.deep.equal(202)
+      })
+      .catch(function (error) {
+        return expect(error.response.statusCode).to.deep.equal(202)
+      })
+  });
+
+  it('check if the attachment field is not null', function () {
+    // Should always succeed
+    options.attachment = [{content: 'yJ3ZWIiOnsiY2xpZW50X2lkIjoiNzMwODE1NDczNDQy', type: 'application/pdf', filename: 'demoPdf.pdf'}]
+    return easyEmail.send(options)
+      .then(function (success) {
+        return expect(success.statusCode).to.deep.equal(202)
+      })
+      .catch(function (error) {
+        return expect(error.response.statusCode).to.deep.equal(202)
+      })
+  });
+})
+
+describe('should validate the template ID field', function () {
+  before(function () {
+    options = {
+      fromEmail: 'pritish@mokko.io',
+      to: 'pritishvaidya94@gmail.com',
+      message: 'demo content',
+      subject: 'demo subject'
+    }
+  });
+  it('check if the template id field is null', function () {
+    // Should always succeed
+    return easyEmail.send(options)
+      .then(function (success) {
+        return expect(success.statusCode).to.deep.equal(202)
+      })
+      .catch(function (error) {
+        return expect(error.response.statusCode).to.deep.equal(202)
+      })
+  });
+
+  it('check if the template id is not null', function () {
+    // Should always succeed
+    options.templateId = config.sendGrid.templateId
+    return easyEmail.send(options)
+      .then(function (success) {
+        return expect(success.statusCode).to.deep.equal(202)
+      })
+      .catch(function (error) {
+        return expect(error.response.statusCode).to.deep.equal(202)
+      })
+  });
+})
+
 
